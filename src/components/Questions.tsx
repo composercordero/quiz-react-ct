@@ -1,31 +1,33 @@
-import type { CollapseProps } from 'antd';
+import { useState, useEffect } from 'react';
 import { Collapse } from 'antd';
+import type { CollapseProps } from 'antd';
+import { getAllQuestions } from '../lib/apiWrapper';
+import QuestionType from '../types/Question';
 
+type questionsProps = {
 
-type questionsProps = {}
+}
+
 const Questions = ({}:questionsProps) => {
-    const items: CollapseProps['items'] = [
-        {
-          key: '1',
-          label: 'What is bright orange with green on top and sounds like a parrot?',
-          children: <p>A Parrot.</p>,
-        },
-        {
-          key: '2',
-          label: 'What can you keep after giving to someone?',
-          children: <p>A promise.</p>,
-        },
-        {
-          key: '3',
-          label: 'Name a 3rd Party Package that helps with API Calls?',
-          children: <p>Axios.</p>,
-        },
-      ];
+
+  const [questions, setQuestions] = useState<QuestionType[]>([]);
+
+  useEffect(() => {
+    async function fetchData(){
+        const response = await getAllQuestions();
+        if (response.data){
+            setQuestions(response.data);
+        }
+    };
+    fetchData();
+  }, [])
+  
+  // const items: CollapseProps['items'] = []
+  // questions.map( item => items.push(item['question'], 'children':item['answer']}) )
   
     return (
         
-        
-        <Collapse items={items} defaultActiveKey={['1']} />
+        <Collapse items={items} />
   )
 }
 export default Questions

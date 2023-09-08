@@ -7,7 +7,7 @@ import Register from './views/Register'
 // Import Components
 import { Layout } from "antd";
 import Navigation from "./components/global/Navigation";
-import Navigation2 from "./components/global/Navigation2";
+// import  from "./components/global/Navigation2";
 import AlertMessage from "./components/global/AlertMessage";
 // Import Globals
 import Header from './components/global/Header'

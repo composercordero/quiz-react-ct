@@ -1,11 +1,12 @@
 import axios from 'axios';
 import UserType from '../types/User'
+import QuestionType from '../types/Question';
 
 
 const base: string = 'https://cae-bookstore.herokuapp.com/';
 
 const userEndpoint: string = '/user';
-const questionsEndpoint:string ='/questions';
+const questionsEndpoint:string ='/question/all';
 
 type APIResponse<T> = {
     error?: string,
@@ -27,7 +28,7 @@ const apiClientTokenAuth = (token:string) => axios.create({
     headers: {Authorization: 'Bearer' + token}
 })
 
-async function getAllQuestions(): Promise<APIResponse<UserType[]>> {
+async function getAllQuestions(): Promise<APIResponse<QuestionType[]>> {
     let error;
     let data;
     try{
@@ -57,4 +58,9 @@ async function getMe(token:string):Promise<APIResponse<UserType>> {
         }
     }
     return {error, data}
+}
+
+export {
+    getAllQuestions,
+    getMe,
 }
