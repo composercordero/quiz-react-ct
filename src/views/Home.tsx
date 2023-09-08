@@ -1,13 +1,18 @@
 import { Content } from "antd/es/layout/layout"
 import { Layout, theme } from 'antd';
+import Questions from "../components/Questions";
+import CategoryType from "../types/Category";
 
-type homeProps = {}
+type homeProps = {
+    flashMessage: (message:string|null, category: CategoryType|null) => void,
+}
 
-function Home(props: homeProps){
+function Home({flashMessage}: homeProps){
 
 const {token: { colorBgContainer},} = theme.useToken();
 
   return (<>
+
     <Content
         style={{
         margin: '24px 16px',
@@ -16,7 +21,7 @@ const {token: { colorBgContainer},} = theme.useToken();
         background: colorBgContainer,
         }}
     >
-        Content
+        <Questions />
     </Content>
     </>)
 }
