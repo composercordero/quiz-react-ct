@@ -1,11 +1,9 @@
 
 type UserType = {
     id: number,
-    username: string,
-    password?: string,
-    confirmPassword?:string,
-    firstName: string,
-    lastName: string,
+    password: string,
+    first_name: string,
+    last_name: string,
     email: string
 }
 

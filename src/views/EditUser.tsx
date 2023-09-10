@@ -5,15 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import CategoryType from '../types/Category';
 import UserType from '../types/User';
 // import apiWrapper functions
-import { register} from '../lib/apiWrapper'
+import { editUser } from '../lib/apiWrapper'
 // import elements
 import {Form, Input, Button, Layout, Typography, theme} from 'antd';
 
-type registerProps = {
+type editUserProps = {
     flashMessage: (message:string|null, category: CategoryType|null) => void,
 }
 
-const Register = ({flashMessage}: registerProps) => {
+const Register = ({flashMessage}: editUserProps) => {
 
   const {token: { colorBgContainer },} = theme.useToken();
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
 
 const handleFormSubmit = async (e:React.FormEvent):Promise<void> => {
     // e.preventDefault();
-    let response = await register(userFormData)
+    let response = await editUser(userFormData.token!,userFormData)
     if(response.error){
         flashMessage(response.error, 'error')
     }else{

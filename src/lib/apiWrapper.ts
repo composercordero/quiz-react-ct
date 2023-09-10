@@ -1,31 +1,32 @@
 import axios from 'axios';
 import UserType from '../types/User'
+import LoginType from '../types/Login'
 import QuestionType from '../types/Question';
 
 
-const base: string = 'https://cae-bookstore.herokuapp.com/';
+const base: string = 'https://cae-bookstore.herokuapp.com';
 
 const userEndpoint: string = '/user';
+const loginEndpoint: string = '/login';
 const questionsEndpoint:string ='/question/all';
+const UserQuestionsEndpoint:string ='/question';
 
 type APIResponse<T> = {
     error?: string,
     data?: T
 }
 
-type TokenType = {
-    token: string,
-    tokenExpiration: string
-}
-
 const apiClientNoAuth = () => axios.create({baseURL: base});
-const apiClientBasicAuth = (username:string, password:string) => axios.create({
+const apiClientBasicAuth = (name:string, password:string) => axios.create({
     baseURL: base,
-    headers: {Authorization: btoa(`${username}:${password}`)}
+    headers: {Authorization: 'Basic ' + btoa(`${name}:${password}`)}
 })
+
 const apiClientTokenAuth = (token:string) => axios.create({
     baseURL: base,
-    headers: {Authorization: 'Bearer' + token}
+    headers: {
+        Authorization: 'Bearer' + token
+    }
 })
 
 async function getAllQuestions(): Promise<APIResponse<QuestionType[]>> {
@@ -33,7 +34,7 @@ async function getAllQuestions(): Promise<APIResponse<QuestionType[]>> {
     let data;
     try{
         const response = await apiClientNoAuth().get(questionsEndpoint);
-        data = response.data
+        data = response.data.questions
     } catch(err) {
         if (axios.isAxiosError(err)){
             error = err.message
@@ -44,17 +45,66 @@ async function getAllQuestions(): Promise<APIResponse<QuestionType[]>> {
     return{error,data}
 }
 
-async function getMe(token:string):Promise<APIResponse<UserType>> {
+async function getUserQuestions(token:string): Promise<APIResponse<QuestionType[]>> {
     let error;
     let data;
     try{
-        const response = await apiClientTokenAuth(token).get(userEndpoint + '/me');
+        const response = await apiClientTokenAuth(token).get(UserQuestionsEndpoint);
+        data = response.data.questions
+    } catch(err) {
+        if (axios.isAxiosError(err)){
+            error = err.message
+        } else{
+            error = 'Something went wrong'
+        }
+    }
+    return{error,data}
+}
+
+async function register(newUserData:Partial<UserType>):Promise<APIResponse<UserType>> {
+    let error;
+    let data;
+    try{
+        const response = await apiClientNoAuth().post(userEndpoint, newUserData)
         data = response.data
-    } catch (err){
+        console.log('here is the response data:', data)
+    } catch(err) {
         if (axios.isAxiosError(err)){
             error = err.response?.data.error
         } else {
-            error = 'Something went wrong.'
+            error = 'Something went wrong'
+        }
+    }
+    return {error, data}
+}
+
+async function login(name:string, password:string):Promise<APIResponse<LoginType>> {
+    let error;
+    let data;
+    try{
+        const response = await apiClientBasicAuth(name, password).get(loginEndpoint)
+        data = response.data
+    } catch(err) {
+        if (axios.isAxiosError(err)){
+            error = err.response?.data.error
+        } else {
+            error = 'Something went wrong'
+        }
+    }
+    return {error, data}
+}
+
+async function editUser(UserData:Partial<UserType>, token:string):Promise<APIResponse<UserType>> {
+    let error;
+    let data;
+    try{
+        const response = await apiClientTokenAuth(token).put(userEndpoint, UserData)
+        data = response.data
+    } catch(err) {
+        if (axios.isAxiosError(err)){
+            error = err.response?.data.error
+        } else {
+            error = 'Something went wrong'
         }
     }
     return {error, data}
@@ -62,5 +112,8 @@ async function getMe(token:string):Promise<APIResponse<UserType>> {
 
 export {
     getAllQuestions,
-    getMe,
+    getUserQuestions,
+    register,
+    login,
+    editUser,
 }

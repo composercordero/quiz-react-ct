@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Collapse } from 'antd';
 import type { CollapseProps } from 'antd';
-import { getAllQuestions } from '../lib/apiWrapper';
+import { getAllQuestions, getUserQuestions } from '../lib/apiWrapper';
 import QuestionType from '../types/Question';
+import UserType from '../types/User';
+import { Space, Button } from 'antd';
 
 type questionsProps = {
-
 }
 
-const Questions = ({}:questionsProps) => {
+const Questions = ({ }:questionsProps) => {
 
   const [questions, setQuestions] = useState<QuestionType[]>([]);
 
@@ -21,13 +22,40 @@ const Questions = ({}:questionsProps) => {
     };
     fetchData();
   }, [])
+
+  const userQuestions = (): void => {
+      async function fetchData(){
+          const token = localStorage.getItem('token') || ''
+          console.log(token)
+          const response = await getUserQuestions(token);
+          console.log(response)
+          if (response.data){
+              setQuestions(response.data);
+          }
+      };
+      fetchData();
+    }
+
+    const allQuestions = (): void => {
+      async function fetchData(){
+          const response = await getAllQuestions();
+          if (response.data){
+              setQuestions(response.data);
+          }
+      };
+      fetchData();
+    }
+
+  const items: CollapseProps['items'] = [];
+
+  questions.forEach((q) => items.push({'label':q.question, 'children':q.answer}))
   
-  // const items: CollapseProps['items'] = []
-  // questions.map( item => items.push(item['question'], 'children':item['answer']}) )
-  
-    return (
-        
+  return (<>
+        <Space>
+          <Button type="primary" onClick={userQuestions}>Show Only My Questions</Button>
+          <Button type="primary" onClick={allQuestions}>Show All Questions</Button>
+        </Space>
         <Collapse items={items} />
-  )
-}
-export default Questions
+        </>)
+      }
+      export default Questions

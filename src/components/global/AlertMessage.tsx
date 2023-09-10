@@ -7,7 +7,7 @@ type alertProps = {
     flashMessage: (message:string|null, category: CategoryType|null) => void,
 }
 
-const AlertMessage = ({category, message, flashMessage}: alertProps) => {
+const AlertMessage = ({ message, category, flashMessage}: alertProps) => {
   return (<>
     <Space direction="vertical" style={{ width: '100%' }}>
         <Alert type={category} message={message} banner closable/>
