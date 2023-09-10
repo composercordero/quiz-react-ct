@@ -12,11 +12,11 @@ import LoginType from '../types/Login';
 
 type LoginProps = {
   isLoggedIn: boolean
-  logUserIn:(user:string|undefined) => void
+  logUserIn:(user:LoginType) => void
   flashMessage: (message:string|null, category: CategoryType|null) => void,
 }
 
-export default function Login({ isLoggedIn, logUserIn, flashMessage}: LoginProps) {
+export default function Login({ logUserIn, flashMessage}: LoginProps) {
 
   const {token: { colorBgContainer },} = theme.useToken();
   const navigate = useNavigate();
@@ -32,30 +32,31 @@ export default function Login({ isLoggedIn, logUserIn, flashMessage}: LoginProps
 
   const [form] = Form.useForm();
 
-
   const [userFormData, setUserFormData] = useState<Partial<UserType>>(
 	  {
-		  first_name: '',
-		  password: '',
+		  	first_name: '',
+		  	last_name:'',
+			email:'',
+		  	password: '',
 	  }
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-	  // console.log(e.target)
 	setUserFormData({...userFormData, [e.target.name]: e.target.value})
   }
 
   const handleFormSubmit = async (e:React.FormEvent):Promise<void> => {
-	  // e.preventDefault();
+	//   e.preventDefault();
 	  let response = await login(userFormData.email!, userFormData.password!)
-	  const currentUser = response.data
 	  if(response.error){
-		  flashMessage(response.error, 'error')
+		  flashMessage(response.error!, 'error')
 	  }else{
 		localStorage.setItem('token', response.data?.token as string);
-		const token = response.data?.token
-		logUserIn(token);
-		navigate('/');
+		localStorage.setItem('first name', response.data?.first_name as string)
+		localStorage.setItem('last name', response.data?.last_name as string)
+		localStorage.setItem('email', response.data?.email as string)
+		localStorage.setItem('password', response.data?.password as string)
+		logUserIn(response.data! as LoginType);
 	  }
   }
 

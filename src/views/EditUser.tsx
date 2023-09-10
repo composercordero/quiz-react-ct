@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import CategoryType from '../types/Category';
 import UserType from '../types/User';
 // import apiWrapper functions
-import { editUser } from '../lib/apiWrapper'
+import { editUser} from '../lib/apiWrapper'
 // import elements
-import {Form, Input, Button, Layout, Typography, theme} from 'antd';
+import {Form, Input, Button, Layout, Typography, theme, Space} from 'antd';
 
 type editUserProps = {
     flashMessage: (message:string|null, category: CategoryType|null) => void,
@@ -39,18 +39,18 @@ const [userFormData, setUserFormData] = useState<Partial<UserType>>(
 );
 
 const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    // console.log(e.target)
   setUserFormData({...userFormData, [e.target.name]: e.target.value})
 }
 
 const handleFormSubmit = async (e:React.FormEvent):Promise<void> => {
     // e.preventDefault();
-    let response = await editUser(userFormData.token!,userFormData)
+    const token = localStorage.getItem('token') || ''
+    let response = await editUser(userFormData, token)
     if(response.error){
         flashMessage(response.error, 'error')
     }else{
-        flashMessage('User Created', 'success')
-        navigate('/about')  
+        flashMessage('User successfully edited', 'info')
+        navigate('/dashboard')  
     }
 }
 
@@ -80,7 +80,7 @@ const { Title } = Typography;
       <Input 
         name="first_name"
         onChange={handleInputChange} 
-        value={userFormData.first_name} />
+        placeholder={localStorage.getItem('first name')!} />
     </Form.Item>
 
     <Form.Item
@@ -91,7 +91,7 @@ const { Title } = Typography;
       <Input 
           name="last_name"
           onChange={handleInputChange} 
-          value={userFormData.last_name}/>
+          placeholder={localStorage.getItem('last name')!}/>
     </Form.Item>
 
     {/* EMAIL */}
@@ -101,25 +101,10 @@ const { Title } = Typography;
       <Input 
           name="email"
           onChange={handleInputChange} 
-          value={userFormData.email}/>
+          placeholder={localStorage.getItem('email')!}/>
     </Form.Item>
 
-    {/* PASSWORD */}
-
-    <Form.Item name="password" label="Password" rules={[ { required: true, message: 'Please input your password!', }, ]} hasFeedback >
-      <Input.Password 
-          name="password"
-          onChange={handleInputChange} 
-          value={userFormData.password}/>
-    </Form.Item>
-
-    <Form.Item {...tailFormItemLayout}>
-      <Button type="primary" htmlType="submit">
-        Register
-      </Button>
-    </Form.Item>
   </Form>
-
     </Layout>
     </>)
 }

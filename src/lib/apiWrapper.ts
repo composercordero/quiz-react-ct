@@ -19,13 +19,15 @@ type APIResponse<T> = {
 const apiClientNoAuth = () => axios.create({baseURL: base});
 const apiClientBasicAuth = (name:string, password:string) => axios.create({
     baseURL: base,
-    headers: {Authorization: 'Basic ' + btoa(`${name}:${password}`)}
+    headers: {
+        Authorization: 'Basic ' + btoa(`${name}:${password}`)
+}
 })
 
 const apiClientTokenAuth = (token:string) => axios.create({
     baseURL: base,
     headers: {
-        Authorization: 'Bearer' + token
+        Authorization: `Bearer ${token}`
     }
 })
 
@@ -51,6 +53,22 @@ async function getUserQuestions(token:string): Promise<APIResponse<QuestionType[
     try{
         const response = await apiClientTokenAuth(token).get(UserQuestionsEndpoint);
         data = response.data.questions
+    } catch(err) {
+        if (axios.isAxiosError(err)){
+            error = err.message
+        } else{
+            error = 'Something went wrong'
+        }
+    }
+    return{error,data}
+}
+
+async function createQuestion(token:string): Promise<APIResponse<QuestionType[]>> {
+    let error;
+    let data;
+    try{
+        const response = await apiClientTokenAuth(token).post(UserQuestionsEndpoint);
+        data = response.data
     } catch(err) {
         if (axios.isAxiosError(err)){
             error = err.message
@@ -110,10 +128,28 @@ async function editUser(UserData:Partial<UserType>, token:string):Promise<APIRes
     return {error, data}
 }
 
+async function deleteUser(token:string):Promise<APIResponse<UserType>> {
+    let error;
+    let data;
+    try{
+        const response = await apiClientTokenAuth(token).delete(userEndpoint)
+        data = response.data
+    } catch(err) {
+        if (axios.isAxiosError(err)){
+            error = err.response?.data.error
+        } else {
+            error = 'Something went wrong'
+        }
+    }
+    return {error, data}
+}
+
 export {
     getAllQuestions,
     getUserQuestions,
+    createQuestion,
     register,
     login,
     editUser,
+    deleteUser,
 }

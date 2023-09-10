@@ -5,6 +5,7 @@ import { getAllQuestions, getUserQuestions } from '../lib/apiWrapper';
 import QuestionType from '../types/Question';
 import UserType from '../types/User';
 import { Space, Button } from 'antd';
+import { SettingOutlined } from '@ant-design/icons';
 
 type questionsProps = {
 }
@@ -28,7 +29,7 @@ const Questions = ({ }:questionsProps) => {
           const token = localStorage.getItem('token') || ''
           console.log(token)
           const response = await getUserQuestions(token);
-          console.log(response)
+          console.log(response.data)
           if (response.data){
               setQuestions(response.data);
           }
@@ -46,9 +47,17 @@ const Questions = ({ }:questionsProps) => {
       fetchData();
     }
 
+    const genExtra = () => (
+      <SettingOutlined
+        onClick={(event) => {
+          console.log('edit')
+        }}
+      />
+    );
+
   const items: CollapseProps['items'] = [];
 
-  questions.forEach((q) => items.push({'label':q.question, 'children':q.answer}))
+  questions.forEach((q) => items.push({'label':q.question, 'children':q.answer, 'extra': genExtra() }))
   
   return (<>
         <Space>

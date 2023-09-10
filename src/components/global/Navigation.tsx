@@ -2,6 +2,8 @@ import {
   HeartOutlined,
   HomeOutlined,
   InfoCircleOutlined,
+  DeleteOutlined,
+
 } from '@ant-design/icons';
 import { Affix, Layout, Menu, theme } from 'antd';
 
@@ -9,10 +11,9 @@ type navigationProps ={
     nav: (key:string)=>void,
     collapsed: boolean,
     isLoggedIn: boolean,
-    logUserOut: () => void
 }
 
-export default function Navigation({nav, collapsed, isLoggedIn, logUserOut}:navigationProps) {
+export default function Navigation({nav, collapsed, isLoggedIn}:navigationProps) {
 
     const {token: { colorBgContainer},} = theme.useToken();
     const {Sider} = Layout;
@@ -40,6 +41,7 @@ export default function Navigation({nav, collapsed, isLoggedIn, logUserOut}:navi
                     { key: '/dashboard', icon: <HomeOutlined />, label: 'Dashboard', },
                     { key: '/info', icon: <InfoCircleOutlined />, label: 'My Info', },
                     { key: '/create', icon: <HeartOutlined />, label: 'Create Questions', },
+                    { key: '/delete', icon: <DeleteOutlined />, label: 'Delete User', },
                     { key: '/logout', icon: <InfoCircleOutlined />, label: 'Logout', },
                     ]}
                     onClick = {({key}) => {nav(key)}}

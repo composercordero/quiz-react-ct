@@ -5,6 +5,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import Home from './views/Home'
 import Dashboard from './views/Dashboard'
 import Login from './views/Login'
+import EditUser from './views/EditUser'
 // Import Components
 import { Layout } from "antd";
 import Navigation from "./components/global/Navigation";
@@ -15,24 +16,27 @@ import Header from './components/global/Header'
 import Footer from './components/global/Footer'
 // Import Types
 import CategoryType from "./types/Category";
-import UserType from "./types/User";
+import LoginType from "./types/Login";
 // Import apiWrapper Functions
-
-
+import { deleteUser } from "./lib/apiWrapper";
 
 export default function App(){
 
   const navigate = useNavigate();
-  const nav = (key:string): void => {key === '/logout' ? logUserOut():navigate(key)}
+  const nav = (key:string): void => {
+    key === '/logout' ? logUserOut(): 
+    key === '/delete' ? handleDeleteUser():
+    navigate(key)}
 
   // USER LOGIN ---------------------------------------------------------------------
 
   const [isLoggedIn, setIsLoggedIn] = useState((localStorage.getItem('token') && new Date(localStorage.getItem('tokenExp') as string) > new Date()) || false );
-  const [loggedInUser, setLoggedInUser] = useState<string|undefined>(undefined)
+  const [loggedInUser, setLoggedInUser] = useState<LoginType|null>(null)
 
-  const logUserIn = (user:string|undefined):void => {
+  const logUserIn = (user:LoginType):void => {
     setIsLoggedIn(true);
-    setLoggedInUser(user)
+    setLoggedInUser(user) // The culprit!
+    console.log(user)
     flashMessage(`You are logged in`, 'success')
     navigate('/dashboard')
   }
@@ -41,13 +45,36 @@ export default function App(){
 
   const logUserOut = (): void => {
     setIsLoggedIn(false);
-    setLoggedInUser(undefined);
+    setLoggedInUser(    {    
+      admin: null,
+      created_on: '',
+      email: '',
+      first_name: '',
+      last_name: '',
+      modified_on: '',
+      token: '',
+      user_id: 1
+      });
     localStorage.removeItem('token');
     localStorage.removeItem('tokenExp');
     flashMessage('You have logged out', 'info');
   }
 
-  // MENU COLLAPSING ---------------------------------------------------------------------
+  // DELETE USER ---------------------------------------------------------------------
+
+  const handleDeleteUser = async (): Promise<void> => {
+    const token = localStorage.getItem('token') || ''
+    let response = await deleteUser(token)
+    if (response.error){
+      flashMessage(response.error, 'error')
+    } else {
+      flashMessage('User Deleted', 'warning')
+      logUserOut()
+      navigate('/')
+    }
+  }
+
+  // MENU COLLAPSING 
   const [collapsed, setCollapsed] = useState(false);
 
   const handleCollapsed = (): void => {
@@ -66,7 +93,7 @@ export default function App(){
 
   return (<>
     <Layout >
-      <Navigation nav={nav} collapsed={collapsed} isLoggedIn={isLoggedIn} logUserOut={logUserOut}/>
+      <Navigation nav={nav} collapsed={collapsed} isLoggedIn={isLoggedIn}/>
       <Layout className="site-layout">
       {message && <AlertMessage category={category!} message={message} flashMessage={flashMessage}/>}
         <Header handleCollapsed={handleCollapsed} collapsed={collapsed}/>
@@ -74,6 +101,9 @@ export default function App(){
           <Route path='/' element={<Home flashMessage={flashMessage} /> }></Route>
           <Route path='/login' element={<Login isLoggedIn={isLoggedIn} logUserIn={logUserIn} flashMessage={flashMessage} />}></Route>
           <Route path='/dashboard' element={<Dashboard flashMessage={flashMessage}/>}></Route>
+          <Route path='/create' element={<Dashboard flashMessage={flashMessage}/>}></Route>
+          <Route path='/info' element={<EditUser flashMessage={flashMessage}/>
+        }></Route>
         </Routes>
         <Footer />
       </Layout>

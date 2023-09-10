@@ -7,7 +7,8 @@ type LoginType = {
     last_name: string,
     modified_on: string,
     token: string,
-    user_id: number
+    user_id: number,
+    password?:string
 }
 
 export default LoginType

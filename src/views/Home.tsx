@@ -50,7 +50,7 @@ const handleFormSubmit = async (e:React.FormEvent):Promise<void> => {
         flashMessage(response.error, 'error')
     }else{
         flashMessage('User Created', 'success')
-        navigate('/about')  
+        navigate('/dashboard')  
     }
 }
 
