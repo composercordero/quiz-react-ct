@@ -1,11 +1,12 @@
 // Import Node Modules
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 // Import Views
 import Home from './views/Home'
 import Dashboard from './views/Dashboard'
 import Login from './views/Login'
 import EditUser from './views/EditUser'
+import EditQuestion from './views/EditQuestion'
 // Import Components
 import { Layout } from "antd";
 import Navigation from "./components/global/Navigation";
@@ -102,8 +103,8 @@ export default function App(){
           <Route path='/login' element={<Login isLoggedIn={isLoggedIn} logUserIn={logUserIn} flashMessage={flashMessage} />}></Route>
           <Route path='/dashboard' element={<Dashboard flashMessage={flashMessage}/>}></Route>
           <Route path='/create' element={<Dashboard flashMessage={flashMessage}/>}></Route>
-          <Route path='/info' element={<EditUser flashMessage={flashMessage}/>
-        }></Route>
+          <Route path='/info' element={<EditUser flashMessage={flashMessage}/>}></Route>
+          <Route path='/question/:questionId' element={<EditQuestion flashMessage={flashMessage} />} />
         </Routes>
         <Footer />
       </Layout>

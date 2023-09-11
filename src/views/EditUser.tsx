@@ -7,7 +7,7 @@ import UserType from '../types/User';
 // import apiWrapper functions
 import { editUser} from '../lib/apiWrapper'
 // import elements
-import {Form, Input, Button, Layout, Typography, theme, Space} from 'antd';
+import {Form, Input, Layout, Typography, theme} from 'antd';
 
 type editUserProps = {
     flashMessage: (message:string|null, category: CategoryType|null) => void,
@@ -86,7 +86,7 @@ const { Title } = Typography;
     <Form.Item
       label="Last Name"
       tooltip="What do you want others to call you?"
-      rules={[{ required: true, message: 'Please input your name!', whitespace: true }]}
+      rules={[{ required: true, message: 'PleaseEditQ input your name!', whitespace: true }]}
     >
       <Input 
           name="last_name"

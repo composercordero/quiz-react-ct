@@ -79,6 +79,38 @@ async function createQuestion(token:string): Promise<APIResponse<QuestionType[]>
     return{error,data}
 }
 
+async function getQuestionById(postId:string):Promise<APIResponse<QuestionType>> {
+    let error;
+    let data;
+    try{
+        const response = await apiClientNoAuth().get(UserQuestionsEndpoint + '/' + postId);
+        data = response.data;
+    } catch(err){
+        if(axios.isAxiosError(err)){
+            error = err.response?.data.error
+        } else {
+            error = 'Something went wrong';
+        }
+    }
+    return {error, data}
+}
+
+async function editQuestionById(token:string, postId:string|number, editedQuestionData:QuestionType): Promise<APIResponse<QuestionType>>{
+    let error;
+    let data;
+    try {
+        const response = await apiClientTokenAuth(token).put(UserQuestionsEndpoint + '/' + postId, editedQuestionData);
+        data = response.data
+    } catch(err){
+        if (axios.isAxiosError(err)){
+            error = err.response?.data.error
+        } else {
+            error = 'Something went wrong'
+        }
+    }
+    return {error,data}
+}
+
 async function register(newUserData:Partial<UserType>):Promise<APIResponse<UserType>> {
     let error;
     let data;
@@ -148,6 +180,8 @@ export {
     getAllQuestions,
     getUserQuestions,
     createQuestion,
+    getQuestionById,
+    editQuestionById,
     register,
     login,
     editUser,

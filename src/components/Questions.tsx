@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Collapse } from 'antd';
 import type { CollapseProps } from 'antd';
 import { getAllQuestions, getUserQuestions } from '../lib/apiWrapper';
 import QuestionType from '../types/Question';
-import UserType from '../types/User';
 import { Space, Button } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
 
@@ -13,6 +13,7 @@ type questionsProps = {
 const Questions = ({ }:questionsProps) => {
 
   const [questions, setQuestions] = useState<QuestionType[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData(){
@@ -63,6 +64,7 @@ const Questions = ({ }:questionsProps) => {
         <Space>
           <Button type="primary" onClick={userQuestions}>Show Only My Questions</Button>
           <Button type="primary" onClick={allQuestions}>Show All Questions</Button>
+          <Button type="primary" onClick={() => {navigate('/question/167')}}>Edit Question 167</Button>
         </Space>
         <Collapse items={items} />
         </>)
