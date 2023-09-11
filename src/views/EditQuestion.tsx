@@ -8,7 +8,7 @@ import { Content } from "antd/es/layout/layout"
 import QuestionType from '../types/Question';
 import CategoryType from '../types/Category';
 // import apiWrapper Functions
-import { getQuestionById, editQuestionById } from '../lib/apiWrapper'
+import { getQuestionById, editQuestionById, deleteQuestionById } from '../lib/apiWrapper'
 
 type EditQuestionProps = {
     flashMessage: (message:string|null, category: CategoryType|null) => void,
@@ -64,6 +64,17 @@ export default function EditQuestion({ flashMessage }:EditQuestionProps){
         }
     }
 
+    const handleDeleteQuestion = async() => {
+        const token = localStorage.getItem('token') || ''
+        const response = await deleteQuestionById(token, questionId!);
+        if(response.error){
+            flashMessage(response.error, 'error')
+        } else {
+            flashMessage('You\'ve deleted the question', 'error');
+            navigate('/')
+        }
+    }
+
     return (
         <>
   <Content
@@ -114,6 +125,8 @@ export default function EditQuestion({ flashMessage }:EditQuestionProps){
 		</Button>
 	  </Form.Item>
 	</Form>
+
+    <Button type='primary' danger onClick={handleDeleteQuestion}>Delete Question</Button>
 
     </Content>
         </>
