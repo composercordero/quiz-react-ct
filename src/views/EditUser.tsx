@@ -7,7 +7,7 @@ import UserType from '../types/User';
 // import apiWrapper functions
 import { editUser} from '../lib/apiWrapper'
 // import elements
-import {Form, Input, Layout, Typography, theme} from 'antd';
+import {Form, Button, Input, Layout, Typography, theme} from 'antd';
 
 type editUserProps = {
     flashMessage: (message:string|null, category: CategoryType|null) => void,
@@ -103,6 +103,12 @@ const { Title } = Typography;
           onChange={handleInputChange} 
           placeholder={localStorage.getItem('email')!}/>
     </Form.Item>
+
+    <Form.Item {...tailFormItemLayout}>
+		<Button type="primary" htmlType="submit">
+		  Register
+		</Button>
+	  </Form.Item>
 
   </Form>
     </Layout>

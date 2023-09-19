@@ -115,7 +115,7 @@ const { Title } = Typography;
 
     <Form.Item {...tailFormItemLayout}>
       <Button type="primary" htmlType="submit">
-        Register
+        Register Now!
       </Button>
     </Form.Item>
   </Form>
